@@ -1,4 +1,5 @@
 from markowitz import Markowitz
+from regularised_markowitz import RegularisedMarkowitz
 import yfinance as yf
 import pandas as pd
 import os
@@ -52,3 +53,8 @@ optimal_weights = markowitz.optimal_weights(0.0010)
 print("Optimal Weights: ", optimal_weights)
 print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
 print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
+
+regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 0.0010)
+print("Optimal Weights: ", regularised_markowitz.optimal_weights(0.0010))
+print("Mean Return: ", regularised_markowitz.portfolio_return(optimal_weights))
+print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))

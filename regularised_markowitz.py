@@ -36,7 +36,7 @@ from scipy.optimize import minimize
 # print(optimal_weights)
 
 
-class Markowitz:
+class RegularisedMarkowitz:
     
     """
     Class to perform Markowitz portfolio optimization
@@ -45,17 +45,18 @@ class Markowitz:
     target_return: target return for the portfolio
     """
     
-    def __init__(self, returns, covariance):
+    def __init__(self, returns, covariance, regularisation=0):
         self.returns = returns
         self.covariance = covariance
         self.n = covariance.shape[0]
         self.target_return = None
+        self.regularisation = regularisation
     
     
     # Define function to calculate portfolio variance given weights
     # weights: weights of the assets in the portfolio
     def portfolio_variance(self, weights):
-        return np.dot(weights.T, np.dot(self.covariance, weights))
+        return np.dot(weights.T, np.dot(self.covariance, weights)) + self.regularisation*np.linalg.norm(weights, ord=1)
     
     
     # Define function to calculate portfolio return given weights
