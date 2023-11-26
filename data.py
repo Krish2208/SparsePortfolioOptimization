@@ -52,14 +52,14 @@ daily_returns = data['Adj Close'].pct_change().apply(lambda x: pd.Series(x).fill
 
 # Calculate the covariance matrix
 cov_matrix = daily_returns.cov()
-print("Covariance Matrix:")
-print(cov_matrix)
+# print("Covariance Matrix:")
+# print(cov_matrix)
 
 # Calculate the expected returns
 expected_returns = daily_returns.mean()
-print("Expected Returns:")
-print(expected_returns)
-print(expected_returns[expected_returns.isna()])
+# print("Expected Returns:")
+# print(expected_returns)
+# print(expected_returns[expected_returns.isna()])
 
 
 # Create an instance of the Markowitz class
@@ -86,5 +86,7 @@ print(expected_returns[expected_returns.isna()])
 # print("Returns: ", total_returns)
 cov_matrix= np.array(cov_matrix)
 expected_returns= np.array(expected_returns)
-x= solve_regularized_qp(cov_matrix, 10, 1, expected_returns)
+# expected_returns= expected_returns.reshape((1,expected_returns.shape[0]))
+# print(expected_returns.shape)
+x= solve_regularized_qp(cov_matrix, 10, 1, 0.5)
 print("Optimal Weights: ", x)
