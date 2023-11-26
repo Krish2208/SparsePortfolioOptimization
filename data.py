@@ -1,5 +1,6 @@
 from markowitz import Markowitz
 from regularised_markowitz import RegularisedMarkowitz
+from regularised_markowitz_cvx import solve_regularized_qp
 import yfinance as yf
 import pandas as pd
 import os
@@ -62,24 +63,28 @@ print(expected_returns[expected_returns.isna()])
 
 
 # Create an instance of the Markowitz class
-markowitz = Markowitz(expected_returns, cov_matrix)
-optimal_weights = markowitz.optimal_weights(0.05)
-print("Optimal Weights: ", optimal_weights)
-print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
+# markowitz = Markowitz(expected_returns, cov_matrix)
+# optimal_weights = markowitz.optimal_weights(0.05)
+# print("Optimal Weights: ", optimal_weights)
+# print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
 # print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
 
 # print(len(data['Adj Close']) - data['Adj Close'].isna().sum())
-total_returns = 0
-for i in range(len(optimal_weights)):
-    total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
-print("Returns: ", total_returns)
+# total_returns = 0
+# for i in range(len(optimal_weights)):
+#     total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
+# print("Returns: ", total_returns)
 
-regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 10, 1)
-regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
-print("Optimal Weights: ", regularised_optimal_weights)
-print("Mean Return: ", regularised_markowitz.portfolio_return(optimal_weights))
-# print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
-total_returns = 0
-for i in range(len(regularised_optimal_weights)):
-    total_returns += regularised_optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
-print("Returns: ", total_returns)
+# regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 10, 1)
+# regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
+# print("Optimal Weights: ", regularised_optimal_weights)
+# print("Mean Return: ", regularised_markowitz.portfolio_return(optimal_weights))
+# # print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+# total_returns = 0
+# for i in range(len(regularised_optimal_weights)):
+#     total_returns += regularised_optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
+# print("Returns: ", total_returns)
+cov_matrix= np.array(cov_matrix)
+expected_returns= np.array(expected_returns)
+x= solve_regularized_qp(cov_matrix, 10, 1, expected_returns)
+print("Optimal Weights: ", x)

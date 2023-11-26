@@ -3,13 +3,13 @@ from cvxopt import matrix, solvers
 
 def solve_regularized_qp(Q, l1, l2, target_return):
     n = Q.shape[0]
-
-    P = matrix(Q + l2 * np.eye(n))
+    # Define the objective function
+    P = matrix(Q+l2 * np.eye(n))
     q = matrix(np.ones(n) * l1)
-    
     # Return constraint
     G_return = matrix(-np.array([np.ones(n)]))
     h_return = matrix(-target_return)
+    print(G_return)
 
     # Combine the constraints
     G = G_return
