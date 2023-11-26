@@ -45,18 +45,19 @@ class RegularisedMarkowitz:
     target_return: target return for the portfolio
     """
     
-    def __init__(self, returns, covariance, regularisation=0):
+    def __init__(self, returns, covariance, regularisation=0, regularisation2=0):
         self.returns = returns
         self.covariance = covariance
         self.n = covariance.shape[0]
         self.target_return = None
         self.regularisation = regularisation
+        self.regularisation2 = regularisation2
     
     
     # Define function to calculate portfolio variance given weights
     # weights: weights of the assets in the portfolio
     def portfolio_variance(self, weights):
-        return np.dot(weights.T, np.dot(self.covariance, weights)) + self.regularisation*np.linalg.norm(weights, ord=1)
+        return np.dot(weights.T, np.dot(self.covariance, weights)) + self.regularisation*np.sum(np.abs(weights)) + self.regularisation2*np.sum(np.square(weights))
     
     
     # Define function to calculate portfolio return given weights

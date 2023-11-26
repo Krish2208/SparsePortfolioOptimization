@@ -4,6 +4,7 @@ import yfinance as yf
 import pandas as pd
 import os
 import pickle
+import numpy as np
 
 benchmark_index = False
 
@@ -12,17 +13,27 @@ tickers = ["SO", "KMB", "K", "AZO", "GIS", "HSY",
            "PEP", "WMT", "NEM", "MCD", "AAPL", "CPB",
            "PG", "CAG", "FOH", "PPL", "DUK", "SYY",
            "REGN", "ABT", "JNJ", "ORLY", "MNST", "SHW",
-           "THC", "GILD", "PG", "LLY", "BIIB"]
+           "THC", "GILD", "PG", "LLY", "BIIB", "DVA",
+              "HCA", "HUM", "CI", "UNH", "WBA",
+                "CVS", "AET", "AMGN", "BMY", "MRK",
+                "PFE", "JPM", "BAC", "WFC", "C", "MS",
+                "GS", "USB", "AXP", "COF", "DFS", "CB",
+                "MET", "PRU", "ALL", "AIG", "AFL", "TRV",
+                "MMC", "HIG", "CINF", "HII", "LMT", "GD", "COL", "HON", "GE", "MMM",
+                "CAT", "DE", "PH", "ITW", "EMR", "ETN",
+                "DOV", "FLS", "ROP", "SWK", "PNR",
+                "AME", "XYL", "NOC", "GD", "LMT",
+                  "TXT", "BA", "TDG"]
 
 start_date = "2007-12-31"
 end_date = "2012-12-31"
 
-if os.path.exists("data.csv"):
-    with open("data.csv", "rb") as f:
+if os.path.exists("data.pkl"):
+    with open("data.pkl", "rb") as f:
         data = pickle.load(f)
 else:
     data = yf.download(tickers, start=start_date, end=end_date)
-    with open("data.csv", "wb") as f:
+    with open("data.pkl", "wb") as f:
         pickle.dump(data, f)
 
 if benchmark_index:
@@ -34,27 +45,41 @@ if benchmark_index:
     target_return = index_data['Adj Close'].pct_change().mean()
     print("Target Return:")
     print(target_return)
+    
+# Daily returns
+daily_returns = data['Adj Close'].pct_change().apply(lambda x: pd.Series(x).fillna(x.mean()))
 
 # Calculate the covariance matrix
-cov_matrix = data['Adj Close'].pct_change().apply(
-    lambda x: pd.Series(x).fillna(x.mean())).cov()
+cov_matrix = daily_returns.cov()
 print("Covariance Matrix:")
 print(cov_matrix)
 
 # Calculate the expected returns
-expected_returns = data['Adj Close'].pct_change().mean()
+expected_returns = daily_returns.mean()
 print("Expected Returns:")
 print(expected_returns)
+print(expected_returns[expected_returns.isna()])
 
 
 # Create an instance of the Markowitz class
 markowitz = Markowitz(expected_returns, cov_matrix)
-optimal_weights = markowitz.optimal_weights(0.0010)
+optimal_weights = markowitz.optimal_weights(0.05)
 print("Optimal Weights: ", optimal_weights)
 print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
-print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
+# print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
 
-regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 0.0010)
-print("Optimal Weights: ", regularised_markowitz.optimal_weights(0.0010))
+# print(len(data['Adj Close']) - data['Adj Close'].isna().sum())
+total_returns = 0
+for i in range(len(optimal_weights)):
+    total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
+print("Returns: ", total_returns)
+
+regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 10, 1)
+regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
+print("Optimal Weights: ", regularised_optimal_weights)
 print("Mean Return: ", regularised_markowitz.portfolio_return(optimal_weights))
-print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+# print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+total_returns = 0
+for i in range(len(regularised_optimal_weights)):
+    total_returns += regularised_optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
+print("Returns: ", total_returns)
