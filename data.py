@@ -63,11 +63,11 @@ expected_returns = daily_returns.mean()
 
 
 # Create an instance of the Markowitz class
-# markowitz = Markowitz(expected_returns, cov_matrix)
-# optimal_weights = markowitz.optimal_weights(0.05)
-# print("Optimal Weights: ", optimal_weights)
-# print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
-# print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
+markowitz = Markowitz(expected_returns, cov_matrix)
+optimal_weights = markowitz.optimal_weights(0.05)
+print("Optimal Weights: ", optimal_weights)
+print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
+print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
 
 # print(len(data['Adj Close']) - data['Adj Close'].isna().sum())
 # total_returns = 0
@@ -75,24 +75,28 @@ expected_returns = daily_returns.mean()
 #     total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
 # print("Returns: ", total_returns)
 
-# regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 5, 20)
-# regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
-# print("Optimal Weights: ", regularised_optimal_weights)
-# print("Mean Return: ", regularised_markowitz.portfolio_return(regularised_optimal_weights))
-# print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 5, 20)
+regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
+print("Optimal Weights: ", regularised_optimal_weights)
+print("Mean Return: ", regularised_markowitz.portfolio_return(regularised_optimal_weights))
+print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+
 # total_returns = 0
 # for i in range(len(regularised_optimal_weights)):
 #     total_returns += regularised_optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
 # print("Returns: ", total_returns)
-cov_matrix= np.array(cov_matrix)
-expected_returns= np.array(expected_returns)
-expected_returns= expected_returns.reshape((1,expected_returns.shape[0]))
+# cov_matrix= np.array(cov_matrix)
+# expected_returns= np.array(expected_returns)
+# expected_returns= expected_returns.reshape((1,expected_returns.shape[0]))
 # expected_returns= expected_returns.T
 # print(expected_returns.size)
-expected_returns= np.vstack([expected_returns, np.eye(expected_returns.shape[1])])
-target_return= np.zeros(expected_returns.shape[1])
-target_return= target_return.reshape((target_return.shape[0],1))
-target_return= np.vstack([0.05, target_return])
-print(target_return)
-x= solve_regularized_qp(cov_matrix, 10, 1, expected_returns, target_return)
-print("Optimal Weights: ", x)
+# expected_returns= np.vstack([expected_returns, np.eye(expected_returns.shape[1])])
+# target_return= np.zeros(expected_returns.shape[1])
+# target_return= target_return.reshape((target_return.shape[0],1))
+# target_return= np.vstack([0.05, target_return])
+# print(target_return)
+# target_return = 0.15
+# expected_returns /= np.std(expected_returns)
+# cov_matrix /= np.outer(np.std(expected_returns), np.std(expected_returns))
+# x= solve_regularized_qp(cov_matrix, 0.1, 0.1, expected_returns, target_return)
+# print("Optimal Weights: ", x)
