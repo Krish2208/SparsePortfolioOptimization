@@ -53,10 +53,18 @@ wealth_reg.append(cumulative_wealth_reg)
 wealth_half.append(cumulative_wealth_half)
 wealth_risk.append(cumulative_wealth_risk)
 
+weights_std = []
+weights_reg = []
+weights_half = []
+weights_risk = []
+
 initial_weights = np.repeat(1/len(tickers), len(tickers))
 
 for day in tqdm.tqdm(range(1, len(data))):
     daily_returns = data[:day]['Adj Close'].pct_change().apply(lambda x: pd.Series(x).fillna(x.mean()))
+    if daily_returns.isnull().values.any():
+        print(day)
+        continue
     
     # Calculate the covariance matrix
     cov_matrix = daily_returns.cov()
@@ -66,24 +74,28 @@ for day in tqdm.tqdm(range(1, len(data))):
     
     # Calculate the optimal weights
     standard_markowitz = Markowitz(expected_returns, cov_matrix)
-    optimal_weights = standard_markowitz.optimal_weights(0.05)
-    cumulative_wealth_std = cumulative_wealth_std*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))
+    optimal_weights = standard_markowitz.optimal_weights(0.01)
+    cumulative_wealth_std = cumulative_wealth_std*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))*(1-transaction_cost)
     wealth_std.append(cumulative_wealth_std)
+    weights_std.append(optimal_weights)
     
     regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, regularisation=0.1, regularisation2=5)
-    optimal_weights = regularised_markowitz.optimal_weights(0.05)
-    cumulative_wealth_reg = cumulative_wealth_reg*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))
+    optimal_weights = regularised_markowitz.optimal_weights(0.01)
+    cumulative_wealth_reg = cumulative_wealth_reg*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))*(1-transaction_cost)
     wealth_reg.append(cumulative_wealth_reg)
+    weights_reg.append(optimal_weights)
     
     regularised_markowitz_half = RegularisedMarkowitzExperiment(expected_returns, cov_matrix, regularisation=5)
-    optimal_weights = regularised_markowitz_half.optimal_weights(0.05)
-    cumulative_wealth_half = cumulative_wealth_half*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))
+    optimal_weights = regularised_markowitz_half.optimal_weights(0.01)
+    cumulative_wealth_half = cumulative_wealth_half*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))*(1-transaction_cost)
     wealth_half.append(cumulative_wealth_half)
+    weights_half.append(optimal_weights)    
     
     regularised_markowitz_risk = RegularisedMarkowitzExperimentRiskAppetite(expected_returns, cov_matrix, regularisation=5, risk_appetite=0.4)
-    optimal_weights = regularised_markowitz_risk.optimal_weights(0.05)
-    cumulative_wealth_risk = cumulative_wealth_risk*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))
+    optimal_weights = regularised_markowitz_risk.optimal_weights(0.01)
+    cumulative_wealth_risk = cumulative_wealth_risk*(1+np.dot(optimal_weights, daily_returns.iloc[-1]))*(1-transaction_cost)
     wealth_risk.append(cumulative_wealth_risk)
+    weights_risk.append(optimal_weights)    
 
 print('Standard Markowitz')
 print('---------------------------------')
@@ -130,19 +142,19 @@ print("Max Drawdown Duration: ", np.argmax(np.maximum.accumulate(wealth_risk) - 
 print("Min Drawdown Duration: ", np.argmin(np.maximum.accumulate(wealth_risk) - wealth_risk))
 
 
-with open("wealth_std.pkl", "wb") as f:
+with open("wealth_std_2.pkl", "wb") as f:
     pickle.dump(wealth_std, f)
-with open("wealth_reg.pkl", "wb") as f:
+with open("wealth_reg_2.pkl", "wb") as f:
     pickle.dump(wealth_reg, f)
-with open("wealth_half.pkl", "wb") as f:
+with open("wealth_half_2.pkl", "wb") as f:
     pickle.dump(wealth_half, f)
-with open("wealth_risk.pkl", "wb") as f:
+with open("wealth_risk_2.pkl", "wb") as f:
     pickle.dump(wealth_risk, f)
-    
-import matplotlib.pyplot as plt
-plt.plot(wealth_std, label='Standard Markowitz')
-plt.plot(wealth_reg, label='l1 + l2 regularisation')
-plt.plot(wealth_half, label='l(1/2) regularisation')
-plt.plot(wealth_risk, label='l(1/2) regularisation with Risk Appetite')
-plt.legend()
-plt.show()
+with open("weights_std_2.pkl", "wb") as f:
+    pickle.dump(weights_std, f)
+with open("weights_reg_2.pkl", "wb") as f:
+    pickle.dump(weights_reg, f)
+with open("weights_half_2.pkl", "wb") as f:
+    pickle.dump(weights_half, f)
+with open("weights_risk_2.pkl", "wb") as f:
+    pickle.dump(weights_risk, f)
