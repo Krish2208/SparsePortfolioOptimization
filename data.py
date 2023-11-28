@@ -1,6 +1,7 @@
 from markowitz import Markowitz
 from regularised_markowitz import RegularisedMarkowitz
-from regularised_markowitz_cvx import solve_regularized_qp
+from regularised_markowitz_half import RegularisedMarkowitzExperiment
+# from regularised_markowitz_cvx import solve_regularized_qp
 import yfinance as yf
 import pandas as pd
 import os
@@ -63,6 +64,9 @@ expected_returns = daily_returns.mean()
 
 
 # Create an instance of the Markowitz class
+
+print('\n\n\nExperiment Standard Markowitz')
+print('---------------------------------')
 markowitz = Markowitz(expected_returns, cov_matrix)
 optimal_weights = markowitz.optimal_weights(0.05)
 print("Optimal Weights: ", optimal_weights)
@@ -75,11 +79,22 @@ print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
 #     total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
 # print("Returns: ", total_returns)
 
-regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 5, 20)
-regularised_optimal_weights = regularised_markowitz.optimal_weights(0.05)
+print('\n\n\nExperiment l1 + l2 regularisation')
+print('---------------------------------')
+regularised_markowitz = RegularisedMarkowitz(expected_returns, cov_matrix, 5, 5)
+regularised_optimal_weights = regularised_markowitz.optimal_weights(0.01)
 print("Optimal Weights: ", regularised_optimal_weights)
 print("Mean Return: ", regularised_markowitz.portfolio_return(regularised_optimal_weights))
 print("Portfolio Variance: ", regularised_markowitz.portfolio_variance(optimal_weights))
+
+print('\n\n\nExperiment l(1/2) regularisation')
+print('---------------------------------')
+regularised_markowitz_experiment = RegularisedMarkowitzExperiment(expected_returns, cov_matrix, 5)
+regularised_optimal_weights_experiment = regularised_markowitz_experiment.optimal_weights(0.05)
+print("Optimal Weights: ", regularised_optimal_weights_experiment)
+print("Sum of Weights: ", np.sum(regularised_optimal_weights_experiment))
+print("Mean Return: ", regularised_markowitz_experiment.portfolio_return(regularised_optimal_weights_experiment))
+print("Portfolio Variance: ", regularised_markowitz_experiment.portfolio_variance(optimal_weights))
 
 # total_returns = 0
 # for i in range(len(regularised_optimal_weights)):
