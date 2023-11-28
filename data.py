@@ -1,6 +1,6 @@
 from markowitz import Markowitz
 from regularised_markowitz import RegularisedMarkowitz
-from regularised_markowitz_half import RegularisedMarkowitzExperiment
+from regularised_markowitz_half import RegularisedMarkowitzExperiment, RegularisedMarkowitzExperimentRiskAppetite
 # from regularised_markowitz_cvx import solve_regularized_qp
 import yfinance as yf
 import pandas as pd
@@ -95,6 +95,16 @@ print("Optimal Weights: ", regularised_optimal_weights_experiment)
 print("Sum of Weights: ", np.sum(regularised_optimal_weights_experiment))
 print("Mean Return: ", regularised_markowitz_experiment.portfolio_return(regularised_optimal_weights_experiment))
 print("Portfolio Variance: ", regularised_markowitz_experiment.portfolio_variance(optimal_weights))
+
+
+print('\n\n\nExperiment l(1/2) regularisation with Risk Appetite')
+print('---------------------------------')
+regularised_markowitz_experiment_risk_appetite = RegularisedMarkowitzExperimentRiskAppetite(expected_returns, cov_matrix, 5, 0.2)
+regularised_optimal_weights_experiment_risk_appetite = regularised_markowitz_experiment_risk_appetite.optimal_weights(0.05)
+print("Optimal Weights: ", regularised_optimal_weights_experiment_risk_appetite)
+print("Sum of Weights: ", np.sum(regularised_optimal_weights_experiment_risk_appetite))
+print("Mean Return: ", regularised_markowitz_experiment_risk_appetite.portfolio_return(regularised_optimal_weights_experiment_risk_appetite))
+print("Portfolio Variance: ", regularised_markowitz_experiment_risk_appetite.portfolio_variance(optimal_weights))
 
 # total_returns = 0
 # for i in range(len(regularised_optimal_weights)):
