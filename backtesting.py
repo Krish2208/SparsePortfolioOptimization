@@ -35,7 +35,8 @@ else:
     data = yf.download(tickers, start=start_date, end=end_date)
     with open("data.pkl", "wb") as f:
         pickle.dump(data, f)
-        
+
+#initialisation      
 transaction_cost = 0
 inital_wealth = 1000000
 cumulative_wealth_std = inital_wealth
@@ -59,7 +60,7 @@ weights_half = []
 weights_risk = []
 
 initial_weights = np.repeat(1/len(tickers), len(tickers))
-
+#run the backtest
 for day in tqdm.tqdm(range(1, len(data))):
     daily_returns = data[:day]['Adj Close'].pct_change().apply(lambda x: pd.Series(x).fillna(x.mean()))
     if daily_returns.isnull().values.any():

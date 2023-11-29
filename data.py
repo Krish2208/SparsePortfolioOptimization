@@ -58,9 +58,7 @@ cov_matrix = daily_returns.cov()
 
 # Calculate the expected returns
 expected_returns = daily_returns.mean()
-# print("Expected Returns:")
-# print(expected_returns)
-# print(expected_returns[expected_returns.isna()])
+
 
 
 # Create an instance of the Markowitz class
@@ -72,12 +70,6 @@ optimal_weights = markowitz.optimal_weights(0.05)
 print("Optimal Weights: ", optimal_weights)
 print("Mean Return: ", markowitz.portfolio_return(optimal_weights))
 print("Portfolio Variance: ", markowitz.portfolio_variance(optimal_weights))
-
-# print(len(data['Adj Close']) - data['Adj Close'].isna().sum())
-# total_returns = 0
-# for i in range(len(optimal_weights)):
-#     total_returns += optimal_weights[i]*expected_returns[i]*(len(data['Adj Close']) - data['Adj Close'].isna().sum())[i]
-# print("Returns: ", total_returns)
 
 print('\n\n\nExperiment l1 + l2 regularisation')
 print('---------------------------------')

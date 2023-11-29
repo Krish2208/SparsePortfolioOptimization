@@ -4,7 +4,7 @@ import cvxopt as opt
 from cvxopt import blas, solvers
 solvers.options['show_progress'] = False
 
-
+##Experimented by trying line fitting, however, it did not work well
 np.random.seed(123)
 
 class MarkowitzOptimization():

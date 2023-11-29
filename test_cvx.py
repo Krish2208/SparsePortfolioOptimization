@@ -6,7 +6,7 @@ import os
 import pickle
 
 benchmark_index = False
-
+##Trial file for polyfit
 # Define the tickers and time period
 tickers = ["SO", "KMB", "K", "AZO", "GIS", "HSY",
            "PEP", "WMT", "NEM", "MCD", "AAPL", "CPB",

@@ -1,41 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
 
-# # Define assets and their expected returns
-# assets = ['AAPL', 'GOOG', 'IBM', 'XOM']
-# returns = np.array([0.1, 0.2, 0.15, 0.05])
-
-# # Define covariance matrix for the assets
-# covariance = np.array([[0.01, 0.005, 0.004, 0.002],
-#                        [0.005, 0.02, 0.007, 0.003],
-#                        [0.004, 0.007, 0.015, 0.001],
-#                        [0.002, 0.003, 0.001, 0.01]])
-
-# # Define target return for the portfolio
-# target_return = 0.12
-
-# # Define function to calculate portfolio variance given weights
-# def portfolio_variance(weights):
-#     return 0.5*np.dot(weights.T, np.dot(covariance, weights))
-
-# # Define function to calculate portfolio return given weights
-# def portfolio_return(weights):
-#     return np.dot(weights.T, returns)
-
-# # Define function to minimize portfolio variance subject to target return constraint
-# def optimize_portfolio(initial_weights):
-#     constraints = ({'type': 'ineq', 'fun': lambda x: portfolio_return(x) - target_return},
-#                    {'type': 'eq', 'fun': lambda x: np.sum(x) - 1})
-#     bounds = tuple((0, 1) for asset in assets)
-#     result = minimize(portfolio_variance, initial_weights, method='SLSQP', bounds=bounds, constraints=constraints)
-#     return result.x
-
-# # Call optimization function with initial weights to obtain optimal weights for the portfolio
-# initial_weights = np.array([0.25, 0.25, 0.25, 0.25])
-# optimal_weights = optimize_portfolio(initial_weights)
-# print(optimal_weights)
-
-
 class RegularisedMarkowitz:
     
     """
